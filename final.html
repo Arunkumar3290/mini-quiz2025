@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini GK Quiz</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body { font-family: Arial; background:#f5f5f5; padding:20px; }
+.container{ max-width:600px; margin:auto; background:white; padding:20px; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.2);}
+h2{text-align:center; color:#2d89ef;}
+.question{ font-size:18px; margin-bottom:10px;}
+.options label{ display:block; background:#f0f0f0; margin:5px 0; padding:8px; border-radius:5px; cursor:pointer;}
+button{ background:#2d89ef; color:white; border:none; padding:10px 15px; margin-top:10px; border-radius:5px; cursor:pointer;}
+button:hover{ background:#1c5db6; }
+#result{ margin-top:15px; font-weight:bold; text-align:center;}
+.correct{ color:green; }
+.wrong{ color:red; }
+.report-item{ margin-top:10px; padding:10px; background:#fafafa; border-left:4px solid #2d89ef; border-radius:5px;}
+</style>
+<!-- AdSense code placeholder -->
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
+</head>
+<body>
+
+<div class="container">
+<h2>Mini GK Quiz</h2>
+<div id="quiz"></div>
+<button onclick="nextQuestion()">Next ➡</button>
+<div id="result"></div>
+
+<!-- Ad Placeholder -->
+<div style="margin-top:20px; text-align:center;">
+  <!-- Example Ad -->
+  <p>Ad goes here</p>
+</div>
+</div>
+
+<script>
+const quizData=[
+{question:"भारत का राष्ट्रीय पक्षी?", options:["बाघ","हाथी","मोर","गिलहरी"], correct:2},
+{question:"‘पंचतंत्र’ किस भाषा में?", options:["संस्कृत","हिंदी","उर्दू","तमिल"], correct:0},
+{question:"भारत का पहला प्रधानमंत्री?", options:["नेहरू","राजेंद्र प्रसाद","महात्मा गांधी","सरदार पटेल"], correct:0},
+{question:"भारत की राष्ट्रीय नदी?", options:["गंगा","यमुना","गोदावरी","कृष्णा"], correct:0}
+];
+
+let currentQ=0;
+let answers={};
+let score=0;
+
+function loadQuestion(){
+  if(currentQ<quizData.length){
+    const q=quizData[currentQ];
+    let html=`<div class='question'><b>Q${currentQ+1}:</b> ${q.question}</div>`;
+    q.options.forEach((opt,i)=>{
+      const checked = answers[currentQ]==i?"checked":"";
+      html += `<label><input type='radio' name='option' value='${i}' ${checked}> ${opt}</label>`;
+    });
+    document.getElementById("quiz").innerHTML=html;
+    document.getElementById("result").innerHTML="";
+  } else showResult();
+}
+
+function nextQuestion(){
+  const selected = document.querySelector("input[name='option']:checked");
+  if(selected){
+    answers[currentQ] = parseInt(selected.value);
+    if(answers[currentQ] === quizData[currentQ].correct) score++;
+  }
+  currentQ++;
+  loadQuestion();
+}
+
+function showResult(){
+  document.getElementById("quiz").innerHTML="";
+  let reportHTML=`<h3>आपका स्कोर: ${score} / ${quizData.length}</h3>`;
+  quizData.forEach((q,i)=>{
+    const userAns = answers[i]!==undefined?q.options[answers[i]]:"Attempt नहीं किया";
+    const isCorrect = answers[i]===q.correct ? "✔" : "❌";
+    const correctAns = q.options[q.correct];
+    reportHTML += `<div class="report-item">
+      <b>Q${i+1}:</b> ${q.question}<br>
+      <span class="${isCorrect==='✔'?'correct':'wrong'}">${isCorrect} आपका उत्तर: ${userAns}</span><br>
+      <span class="correct">सही उत्तर: ${correctAns}</span>
+    </div>`;
+  });
+  document.getElementById("result").innerHTML = reportHTML;
+}
+
+loadQuestion();
+</script>
+</body>
+</html>
